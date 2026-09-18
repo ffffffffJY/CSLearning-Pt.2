@@ -5,6 +5,11 @@ public class StarTriangle5 {
      */
     public static void starTriangle5() {
         // TODO: Fill in this function
+        IO.println("    *");
+        IO.println("   **");
+        IO.println("  ***");
+        IO.println(" ****");
+        IO.println("*****");
     }
 
     void main() {

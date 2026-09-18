@@ -5,9 +5,20 @@ public class StarTriangleN {
      */
     public static void starTriangle(int N) {
         // TODO: Fill in this function
+        for (int i = 1; i <= N; i++) {
+            print_n(N - i, ' ');
+            print_n(i, '*');
+            IO.println("");
+        }
+    }
+
+    public static void print_n(int n, char c) {
+        for (int i = 0; i < n; i++) {
+            IO.print(c);
+        }
     }
 
     void main() {
-        starTriangle(7);
+        starTriangle(8);
     }
 }
