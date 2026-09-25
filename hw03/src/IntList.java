@@ -41,7 +41,12 @@ public class IntList {
      */
     public static IntList incrRecursiveDestructive(IntList L, int x) {
         // TODO: Fill in this code
-        return null;
+        if (L == null) {
+            return null;
+        }
+        L.first = L.first + x;
+        L.rest = incrRecursiveDestructive(L.rest, x);
+        return L;
     }
 
     /*
@@ -55,7 +60,9 @@ public class IntList {
      */
     public int sum() {
         // Optional: Fill in this code
-        return 0;
+        int s = this.first;
+        s += this.rest.sum();
+        return s;
     }
 
     /**
@@ -63,6 +70,11 @@ public class IntList {
      */
     public void addLast(int x) {
         // Optional: Fill in this code
+        IntList p = this;
+        while (p != null) {
+            p =  p.rest;
+        }
+        p = new IntList(x, null);
     }
 
     /**
@@ -73,5 +85,6 @@ public class IntList {
      */
     public void addFirst(int x) {
         // Optional: Fill in this code
+        ;
     }
 }
