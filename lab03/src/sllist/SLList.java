@@ -31,6 +31,13 @@ public class SLList {
      *  5 -> 6 -> 2 -> 10. */
     public void insert(int x, int position) {
         // TODO: Fill in this method
+        this.size += 1;
+        IntNode newNode = sentinel;
+        while(position > 0 && newNode.next != null) {
+            newNode = newNode.next;
+            position--;
+        }
+        newNode.next = new IntNode(x, newNode.next);
     }
 
     /** Returns the items of this list as an array (provided for testing). */

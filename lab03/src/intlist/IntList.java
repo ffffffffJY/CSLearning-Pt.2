@@ -13,19 +13,42 @@ public class IntList {
      *  Modifies the passed list. Iterative (no recursion allowed). */
     public static void replaceID(IntList L, int a, int b) {
         // TODO: Fill in this method (destructive, iterative)
+        IntList p = L;
+        while (p != null) {
+            if (p.first == a) {
+                p.first = b;
+            }
+            p = p.rest;
+        }
     }
 
     /** Returns a copy of L, but with all instances of a replaced by b.
      *  Does not modify the passed list. Recursive. */
     public static IntList replaceRND(IntList L, int a, int b) {
         // TODO: Fill in this method (non-destructive, recursive)
-        return null;
+        IntList p;
+        if (L == null) {
+            return null;
+        }
+        if(L.first == a) {
+            p = new IntList(b, replaceRND(L.rest, a, b));
+        }
+        else {
+            p = new IntList(L.first, replaceRND(L.rest, a, b));
+        }
+        return p;
     }
 
     /** Replaces all instances of a with b in L.
      *  Modifies the passed list. Recursive. */
     public static void replaceRD(IntList L, int a, int b) {
         // TODO: Fill in this method (destructive, recursive)
+        if (L != null) {
+            if (L.first == a) {
+                L.first = b;
+            }
+            replaceRD(L.rest, a, b);
+        }
     }
 
     /** Adds nodes to this list so that the resulting sequence is a stair,
@@ -35,6 +58,20 @@ public class IntList {
      *  Example: [2, 5, 3].stairify() results in [2, 3, 4, 5, 4, 3]. */
     public IntList stairify() {
         // TODO: Fill in this method (extra, exam-level practice)
+        IntList p = this;
+        while (p != null && p.rest != null) {
+            if (p.first + 1 < p.rest.first) {
+                while (p.first + 1 < p.rest.first) {
+                    p.rest = new IntList(p.rest.first - 1, p.rest);
+                }
+            }
+            if (p.first - 1 > p.rest.first) {
+                while (p.first - 1 > p.rest.first) {
+                    p.rest = new IntList(p.rest.first + 1, p.rest);
+                }
+            }
+            p = p.rest;
+        }
         return this;
     }
 
