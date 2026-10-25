@@ -57,50 +57,77 @@ public class Experiments {
 
     public static TimingData timeSp16fp9p1() {
         TimingData td = new TimingData("sp16fp9p1");
+        int ops = 10000;
 
-        // TODO: YOUR CODE HERE
+        for (int N = 4000; N <= 128000; N *= 2) {
+            Stopwatch sw = new Stopwatch();
+            long fpp1 = FunctionsToBeTimed.sp16fp9p1(N);
+            td.add(N, ops, sw.elapsedTime());
+        }
 
         return td;
     }
 
     public static TimingData timeSp16fp9p2() {
         TimingData td = new TimingData("sp16fp9p2");
+        int ops = 10000;
 
-        // TODO: YOUR CODE HERE
+        for (int N = 1000000; N <= 128000000; N *= 2) {
+            Stopwatch sw = new Stopwatch();
+            long fpp2 = FunctionsToBeTimed.sp16fp9p2(N);
+            td.add(N, ops, sw.elapsedTime());
+        }
 
         return td;
     }
 
     public static TimingData timeMsf() {
         TimingData td = new TimingData("msf");
+        int ops = 10000;
 
-        // TODO: YOUR CODE HERE
+        for (int N = 1000000; N <= 64000000; N *= 2) {
+            Stopwatch sw = new Stopwatch();
+            long msf = FunctionsToBeTimed.msf(N);
+            td.add(N, ops, sw.elapsedTime());
+        }
 
         return td;
     }
 
     public static TimingData timeSp16fp9p5() {
         TimingData td = new TimingData("sp16fp9p5");
+        int ops = 10000;
 
-        // TODO: YOUR CODE HERE
+        for (int N = 1000; N <= 32000; N *= 2) {
+            Stopwatch sw = new Stopwatch();
+            long fpp5 = FunctionsToBeTimed.sp16fp9p5(N);
+            td.add(N, ops, sw.elapsedTime());
+        }
 
         return td;
     }
 
     public static TimingData timeAListConstruction() {
         TimingData td = new TimingData("AList addLast construction");
+        int ops = 10000;
 
-        // TODO: YOUR CODE HERE
+        for (int N = 100000; N <= 204800000; N *= 2) {
+            Stopwatch sw = new Stopwatch();
+            AList<Integer> list = new AList<>();
+            for (int i = 0; i < N; i += 1) {
+                list.addLast(i);
+            }
+            td.add(N, ops, sw.elapsedTime());
+        }
 
         return td;
     }
 
     void main() {
-        // TODO: Modify the following line to change the experiment you're running
-        TimingData td = exampleListExperiment();
+        TimingData td = timeAListConstruction();
 
         printTimingTable(td);
-        Fit.plot(td);
+        Fit.plotWithFit(td, Fit.Growth.N);
 
         // Once you have timing data for sp16fp9p1, try drawing a best-fit curve over it, e.g.
         // Fit.plotWithFit(td, Fit.Growth.N_SQUARED);
