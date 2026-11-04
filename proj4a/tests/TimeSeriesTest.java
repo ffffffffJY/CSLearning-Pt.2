@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /** Unit Tests for the TimeSeries class.
  *  @author Josh Hug
@@ -59,5 +60,55 @@ public class TimeSeriesTest {
 
         assertThat(totalPopulation.years()).isEmpty();
         assertThat(totalPopulation.data()).isEmpty();
+    }
+
+    @Test
+    public void testDataAndDateToList() {
+        TimeSeries catPopulation = new TimeSeries();
+        assertThat(catPopulation.years()).isEmpty();
+        assertThat(catPopulation.data()).isEmpty();
+
+        catPopulation.put(1991, 0.0);
+        catPopulation.put(1992, 100.0);
+        catPopulation.put(1994, 200.0);
+        catPopulation.put(1995, 500.0);
+        TimeSeries dogPopulation = new TimeSeries(catPopulation, 1991, 1994);
+        assertThat(dogPopulation.years()).containsExactly(1991, 1992, 1994).inOrder();
+        assertThat(dogPopulation.data()).containsExactly(0.0, 100.0, 200.0).inOrder();
+    }
+
+    @Test
+    public void testDividedBy() {
+        TimeSeries catPopulation = new TimeSeries();
+        catPopulation.put(1991, 0.0);
+        catPopulation.put(1992, 100.0);
+        catPopulation.put(1994, 200.0);
+
+
+        TimeSeries dogPopulation = new TimeSeries();
+        dogPopulation.put(1992, 150.0);
+        dogPopulation.put(1994, 400.0);
+        dogPopulation.put(1995, 500.0);
+
+        assertThrows(IllegalArgumentException.class, () -> dogPopulation.dividedBy(catPopulation));
+
+        catPopulation.put(1995, 500.0);
+        TimeSeries Portion = dogPopulation.dividedBy(catPopulation);
+
+        List<Integer> expectedYears = new ArrayList<>();
+        expectedYears.add(1992);
+        expectedYears.add(1994);
+        expectedYears.add(1995);
+
+        assertThat(Portion.years()).isEqualTo(expectedYears);
+
+        List<Double> expectedPortion = new ArrayList<>();
+        expectedPortion.add(1.5);
+        expectedPortion.add(2.0);
+        expectedPortion.add(1.0);
+
+        for (int i = 0; i < expectedPortion.size(); i += 1) {
+            assertThat(Portion.data().get(i)).isWithin(1E-10).of(expectedPortion.get(i));
+        }
     }
 } 
