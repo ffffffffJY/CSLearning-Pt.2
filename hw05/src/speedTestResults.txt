@@ -1,0 +1,23 @@
+add 23456 strings of length 10000(aaaa):
+class ULLMap: ?(unknown)
+class BSTMap: 29.93 sec
+Java's Built-in TreeMap: 31.43 sec
+Java's Built-in HashMap: 30.93 sec
+
+add 5000 strings of length 10000(n):
+class ULLMap: 1.12 sec
+class BSTMap: 0.58 sec
+Java's Built-in TreeMap: 0.63 sec
+Java's Built-in HashMap: 0.66 sec
+
+add 23456 strings of length 1000(n):
+class ULLMap: 7.07 sec
+class BSTMap: 0.29 sec
+Java's Built-in TreeMap: 0.30 sec
+Java's Built-in HashMap: 0.38 sec
+
+add 10000 strings of length 1000(n):
+class ULLMap: 1.72 sec
+class BSTMap: 0.14 sec
+Java's Built-in TreeMap: 0.13 sec
+Java's Built-in HashMap: 0.14 sec
