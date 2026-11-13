@@ -29,7 +29,7 @@ public class Lab9DFS {
             throw new IllegalArgumentException("no such node: " + start);
         }
         this.g = g;
-        // TODO: Run the search from start, filling in marked, preOrder, and postOrder.
+        dfs(g, start);
     }
 
     /** Returns true if s was reached by the search, i.e. there is a path
@@ -54,5 +54,19 @@ public class Lab9DFS {
      *  have been fully explored. The last node in the list is always start. */
     public List<String> postOrder() {
         return new ArrayList<>(postOrder);
+    }
+
+    private void dfs(Lab9Graph g, String start) {
+        if (marked.contains(start)) {
+            return;
+        }
+        marked.add(start);
+        preOrder.add(start);
+        List<String> neighbours = g.neighbors(start);
+        neighbours.removeIf(marked::contains);
+        for (String neighbour : neighbours) {
+            dfs(g, neighbour);
+        }
+        postOrder.add(start);
     }
 }
