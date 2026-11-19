@@ -1,28 +1,54 @@
 package main;
-import edu.berkeley.eecs.inst.cs61b.ngrams.StaffNGramMap;
 
+import java.util.Collection;
 import java.util.TreeMap;
+import java.util.Map;
 
-/** An object that provides utility methods for making queries on the
- *  Google NGrams dataset (or a subset thereof).
+import static main.TimeSeries.MAX_YEAR;
+import static main.TimeSeries.MIN_YEAR;
+
+import edu.princeton.cs.algs4.In;
+
+/**
+ * An object that provides utility methods for making queries on the
+ * Google NGrams dataset (or a subset thereof).
+ * <p>
+ * An NGramMap stores pertinent data from a "words file" and a "counts
+ * file". It is not a map in the strict sense, but it does provide additional
+ * functionality.
  *
- *  An NGramMap stores pertinent data from a "words file" and a "counts
- *  file". It is not a map in the strict sense, but it does provide additional
- *  functionality.
- *
- *  This is a stripped-down version of the staff solution for 4A. Feel free
- *  to replace this file with your own implementation.
- *
- *  @author Josh Hug
+ * @author Josh Hug
  */
-public class NGramMap extends StaffNGramMap {
+public class NGramMap {
 
-    public static final int MIN_YEAR = 1400;
-    public static final int MAX_YEAR = 2100;
+    Map<String, TimeSeries> wordMap;
+    TimeSeries yearMap;
 
-    /** Constructs an NGramMap from WORDHISTORYFILENAME and YEARHISTORYFILENAME. */
+    /**
+     * Constructs an NGramMap from WORDHISTORYFILENAME and YEARHISTORYFILENAME.
+     */
     public NGramMap(String wordHistoryFilename, String yearHistoryFilename) {
-        super(wordHistoryFilename, yearHistoryFilename);
+        In inWord = new In(wordHistoryFilename);
+        In inYear = new In(yearHistoryFilename);
+        wordMap = new TreeMap<String, TimeSeries>();
+        yearMap = new TimeSeries();
+
+        while (!inWord.isEmpty()) {
+            String[] splitLine = inWord.readLine().split("\t");
+            String word = splitLine[0];
+            int year = Integer.parseInt(splitLine[1]);
+            Double frequency = Double.parseDouble(splitLine[2]);
+            if (wordMap != null && !wordMap.containsKey(word)) {
+                wordMap.put(word, new TimeSeries());
+            }
+            wordMap.get(word).put(year, frequency);
+        }
+        while (!inYear.isEmpty()) {
+            String[] splitLine = inYear.readLine().split(",");
+            int year = Integer.parseInt(splitLine[0]);
+            Double total = Double.parseDouble(splitLine[1]);
+            yearMap.put(year, total);
+        }
     }
 
     /**
@@ -32,8 +58,12 @@ public class NGramMap extends StaffNGramMap {
      * NGramMap. This is also known as a "defensive copy". If the word is not in the data files,
      * returns an empty TimeSeries.
      */
-    public TreeMap<Integer, Double> countHistory(String word, int startYear, int endYear) {
-        return super.countHistory(word, startYear, endYear);
+    public TimeSeries countHistory(String word, int startYear, int endYear) {
+        TimeSeries ret = new TimeSeries();
+        if (wordMap.containsKey(word)) {
+            ret = new TimeSeries(wordMap.get(word), startYear, endYear);
+        }
+        return ret;
     }
 
     /**
@@ -42,9 +72,67 @@ public class NGramMap extends StaffNGramMap {
      * should not also affect the NGramMap. This is also known as a "defensive copy". If the word
      * is not in the data files, returns an empty TimeSeries.
      */
-    public TreeMap<Integer, Double> countHistory(String word) {
-        return countHistory(word, MIN_YEAR, MAX_YEAR);
+    public TimeSeries countHistory(String word) {
+        TimeSeries ret = new TimeSeries();
+        if (wordMap.containsKey(word)) {
+            ret = new TimeSeries(wordMap.get(word), MIN_YEAR, MAX_YEAR);
+        }
+        return ret;
     }
 
-    // TODO: Replace this file with your own implementation if you want all the methods of an NGramMap
+    /**
+     * Returns a defensive copy of the total number of words recorded per year in all volumes.
+     */
+    public TimeSeries totalCountHistory() {
+        return new TimeSeries(this.yearMap, MIN_YEAR, MAX_YEAR);
+    }
+
+    /**
+     * Provides a TimeSeries containing the relative frequency per year of WORD between STARTYEAR
+     * and ENDYEAR, inclusive of both ends. If the word is not in the data files, returns an empty
+     * TimeSeries.
+     */
+    public TimeSeries weightHistory(String word, int startYear, int endYear) {
+        TimeSeries wordHistory = countHistory(word, startYear, endYear);
+        TimeSeries totalHistory = totalCountHistory();
+        return wordHistory.dividedBy(totalHistory);
+    }
+
+    /**
+     * Provides a TimeSeries containing the relative frequency per year of WORD compared to all
+     * words recorded in that year. If the word is not in the data files, returns an empty
+     * TimeSeries.
+     */
+    public TimeSeries weightHistory(String word) {
+        TimeSeries wordHistory = countHistory(word);
+        TimeSeries totalHistory = totalCountHistory();
+        return wordHistory.dividedBy(totalHistory);
+    }
+
+    /**
+     * Provides the summed relative frequency per year of all words in WORDS between STARTYEAR and
+     * ENDYEAR, inclusive of both ends. If a word does not exist in this time frame, ignore it
+     * rather than throwing an exception.
+     */
+    public TimeSeries summedWeightHistory(Collection<String> words,
+                                          int startYear, int endYear) {
+        TimeSeries add = new TimeSeries();
+        for (String word : words) {
+            add = add.plus(countHistory(word, startYear, endYear));
+        }
+        return add.dividedBy(totalCountHistory());
+    }
+
+    /**
+     * Returns the summed relative frequency per year of all words in WORDS. If a word does not
+     * exist in this time frame, ignore it rather than throwing an exception.
+     */
+    public TimeSeries summedWeightHistory(Collection<String> words) {
+        TimeSeries add = new TimeSeries();
+        for (String word : words) {
+            add = add.plus(countHistory(word));
+        }
+        return add.dividedBy(totalCountHistory());
+    }
+
 }
