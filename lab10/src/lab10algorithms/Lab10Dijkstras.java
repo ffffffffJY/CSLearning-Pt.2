@@ -4,6 +4,7 @@ import lab10lib.ExtrinsicMinPQ;
 import lab10lib.Lab10Graph;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,21 +46,34 @@ public class Lab10Dijkstras {
         distTo.put(source, 0);
         fringe.changePriority(source, 0);
 
-        // TODO: Fill in the rest of Dijkstra's algorithm.
+        String cur;
+        while (fringe.size() != 0) {
+            cur = fringe.removeSmallest();
+            List<String> neighbors = g.neighbors(cur);
+            for (String neighbor : neighbors) {
+                int newDist = g.edgeWeight(cur, neighbor) + distTo.get(cur);
+                if (distTo.get(neighbor) > newDist) {
+                    distTo.put(neighbor, newDist);
+                    edgeTo.put(neighbor, cur);
+                    fringe.changePriority(neighbor, newDist);
+                }
+            }
+        }
     }
 
     /** Returns true if there is a path from the source to v. The source
      *  always has a path to itself. */
     public boolean hasPathTo(String v) {
-        // TODO: Replace this with your implementation.
-        return false;
+        return distTo.containsKey(v) && distTo.get(v) != Integer.MAX_VALUE;
     }
 
     /** Returns the total weight of the shortest path from the source to v.
      *  Throws IllegalArgumentException if there is no path to v. */
     public int distTo(String v) {
-        // TODO: Replace this with your implementation.
-        return 0;
+        if (!hasPathTo(v)) {
+            throw new IllegalArgumentException("no such path: " + v);
+        }
+        return distTo.get(v);
     }
 
     /** Returns the shortest path from the source to v as a list of nodes,
@@ -67,7 +81,16 @@ public class Lab10Dijkstras {
      *  itself is the one-element list [source].
      *  Throws IllegalArgumentException if there is no path to v. */
     public List<String> shortestPathTo(String v) {
-        // TODO: Replace this with your implementation.
-        return null;
+        if (!hasPathTo(v)) {
+            throw new IllegalArgumentException("no such path: " + v);
+        }
+        LinkedList<String> path = new LinkedList<>();
+        path.addFirst(v);
+        String current = v;
+        while (!current.equals(source)) {
+            current = edgeTo.get(current);
+            path.addFirst(current);
+        }
+        return path;
     }
 }

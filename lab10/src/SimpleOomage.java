@@ -11,28 +11,28 @@ public class SimpleOomage implements Oomage {
     private static final double WIDTH = 0.01;
     private static final boolean USE_PERFECT_HASH = false;
 
-    /*
-        TODO: Write this method. Use pattern matching (instanceof) to check
-       whether o is a SimpleOomage, as in lecture.
-       */
+
     @Override
     public boolean equals(Object o) {
+        if (o instanceof SimpleOomage so) {
+            if (this.red == so.red && so.green == this.green && this.blue == so.blue) {
+                return true;
+            }
+        }
         return false;
     }
 
-    /* Uncomment this method after you've written
-       equals and failed the testHashCodeAndEqualsConsistency
-       test.
     @Override
     public int hashCode() {
         if (!USE_PERFECT_HASH) {
             return red + green + blue;
         } else {
-            // TODO: Write a perfect hash function for Simple Oomages.
-            return 0;
+            int r = red / 5;
+            int g = green / 5;
+            int b = blue / 5;
+            return r * 52 * 52 + g * 52 + b;
         }
-    }*/
-
+    }
     public SimpleOomage(int r, int g, int b) {
         if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255) {
             throw new IllegalArgumentException();
