@@ -92,24 +92,23 @@ public class SeamCarver {
         int w = e.length;
         int h = e[0].length;
 
-        //TODO: Initialize m, the 2d array you are returning
-
-        //TODO: Populate the first row. HINT: What stays constant: x or y?
-
-        //TODO: Uncomment (Highlight, then CMD or CTRL + /), then iterate through the rest
-        // for (int y = _; y < _; y += 1) {
-        //     for (int x = _; x < _; x += 1) {
-        //         //TODO: Find the minimum of the three tiles "above".
-        //         //Remember to consider cases where we are on the edge
-
-
-        //         //TODO: Set m[x][y] to be "e[x][y] + above" (what you just calculated)
-
-        //     }
-        // }
-
-        //TODO: Return m
-        return null;
+        double[][] ret = new double[w][h];
+        for (int y = 0; y < h; y += 1) {
+            for (int x = 0; x < w; x += 1) {
+                if (y == 0) {
+                    ret[x][y] = e[x][y];
+                } else {
+                    double minAbove = Double.MAX_VALUE;
+                    for (int z = x - 1; z <= x + 1; z += 1) {
+                        if (z >= 0 && z < w && minAbove > ret[z][y - 1]) {
+                            minAbove = ret[z][y - 1];
+                        }
+                    }
+                    ret[x][y] = minAbove + e[x][y];
+                }
+            }
+        }
+        return ret;
     }
 
     /** Given a table M as produced by computeM, returns the vertical seam it
@@ -125,20 +124,26 @@ public class SeamCarver {
         int w = m.length;
         int h = m[0].length;
 
-        //TODO: Initialize seam, the array you are returning
-
-        //TODO: Set the last element of the seam to be the x-index of the smallest value in the bottom row
-        //Hint: Find the minimum value while also keeping track of the x-index corresponding to that minimum value
-
-        // //TODO: Uncomment (Highlight, then CMD or CTRL + /), then iterate upwards from the 2nd-to-last row
-        // for (int y = _; y >= _; y -= 1) {
-        //     //TODO: Set the value of seam[y] to be the x-index of the lowest of the
-        //     //(up-to) three values around seam[y+1]
-        //     //Hint: This is the same formula as earlier, but with only 3 elements
-
-        // }
-        //TODO: Return the seam
-        return null;
+        int[] ret = new int[h];
+        ret[h - 1] = 0;
+        for (int x = 0; x < w; x += 1) {
+            if (m[ret[h - 1]][h - 1] > m[x][h - 1]) {
+                ret[h - 1] = x;
+            }
+        }
+        for (int y = h - 2; y >= 0; y -= 1) {
+            int idx = ret[y + 1] - 1;
+            if (idx < 0) {
+                idx = 0;
+            }
+            for (int z = ret[y + 1] - 1; z < ret[y + 1] + 2; z += 1) {
+                if (z >= 0 && z < w && m[idx][y] > m[z][y]) {
+                    idx = z;
+                }
+            }
+            ret[y] = idx;
+        }
+        return ret;
     }
 
     /** Returns a minimum-energy horizontal seam: an array of length width()
