@@ -1,0 +1,43 @@
+--InOrder--
+(times 10000)
+ULLMap: 0.38 sec
+MyHashMap: 0.01 sec
+Built-in HashMap: 0.01 sec
+
+(times 100000)
+ULLMap: --StackOverFlow--
+MyHashMap: 0.05 sec
+Built-in HashMap: 0.04 sec
+
+--random--
+(str length 50000, times 3000)
+ULLMap: 2.45 sec
+MyHashMap: 2.18 sec
+Built-in HashMap: 1.85 sec
+
+(str length 100, times 3000)
+ULLMap: 0.03 sec
+MyHashMap: 0.01 sec
+Built-in HashMap: 0.01 sec
+
+--buckets--
+(str length 100, times 10000)
+ArrayList buckets: 0.06 sec
+LinkedList buckets: 0.03 sec
+HashSet buckets: 0.02 sec
+Stack buckets: 0.03 sec
+ArrayDeque buckets: 0.02 sec
+
+(str length 100, times 50000)
+ArrayList buckets: 0.11 sec
+LinkedList buckets: 0.09 sec
+HashSet buckets: 0.12 sec
+Stack buckets: 0.11 sec
+ArrayDeque buckets: 0.13 sec
+
+(str length 1000, times 10000)
+ArrayList buckets: 0.15 sec
+LinkedList buckets: 0.13 sec
+HashSet buckets: 0.13 sec
+Stack buckets: 0.14 sec
+ArrayDeque buckets: 0.14 sec
